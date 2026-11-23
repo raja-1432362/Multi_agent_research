@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { margin: 0; padding: 15px; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+</style>
+</head>
+<body>
+  <svg width="860" height="380" viewBox="0 0 860 380">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#374151" />
+      </marker>
+    </defs>
+    <!-- USER Entity -->
+    <rect x="20" y="30" width="160" height="95" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="100" y="55" font-size="14" font-weight="bold" fill="#1e3a8a" text-anchor="middle">USER</text>
+    <text x="35" y="75" font-size="11" fill="#374151">• user_id (PK)</text>
+    <text x="35" y="92" font-size="11" fill="#374151">• email, passwordHash</text>
+    <text x="35" y="109" font-size="11" fill="#374151">• created_at</text>
+
+    <!-- RESEARCH Entity -->
+    <rect x="330" y="25" width="190" height="110" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+    <text x="425" y="50" font-size="14" font-weight="bold" fill="#4c1d95" text-anchor="middle">RESEARCH</text>
+    <text x="345" y="70" font-size="11" fill="#374151">• research_id (PK)</text>
+    <text x="345" y="87" font-size="11" fill="#374151">• user_id (FK)</text>
+    <text x="345" y="104" font-size="11" fill="#374151">• query, topic, summary</text>
+    <text x="345" y="121" font-size="11" fill="#374151">• factual_score, status</text>
+
+    <!-- SOURCE Entity -->
+    <rect x="660" y="25" width="180" height="110" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="750" y="50" font-size="14" font-weight="bold" fill="#064e3b" text-anchor="middle">SOURCE</text>
+    <text x="675" y="70" font-size="11" fill="#374151">• source_id (PK)</text>
+    <text x="675" y="87" font-size="11" fill="#374151">• research_id (FK)</text>
+    <text x="675" y="104" font-size="11" fill="#374151">• url, title, snippet</text>
+    <text x="675" y="121" font-size="11" fill="#374151">• reliability_score</text>
+
+    <!-- CLAIM Entity -->
+    <rect x="220" y="240" width="190" height="110" rx="6" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+    <text x="315" y="265" font-size="14" font-weight="bold" fill="#7c2d12" text-anchor="middle">CLAIM</text>
+    <text x="235" y="285" font-size="11" fill="#374151">• claim_id (PK)</text>
+    <text x="235" y="302" font-size="11" fill="#374151">• research_id (FK)</text>
+    <text x="235" y="319" font-size="11" fill="#374151">• claim_text, status</text>
+    <text x="235" y="336" font-size="11" fill="#374151">• confidence_score</text>
+
+    <!-- CITATION Entity -->
+    <rect x="540" y="240" width="190" height="110" rx="6" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
+    <text x="635" y="265" font-size="14" font-weight="bold" fill="#831843" text-anchor="middle">CITATION</text>
+    <text x="555" y="285" font-size="11" fill="#374151">• citation_id (PK)</text>
+    <text x="555" y="302" font-size="11" fill="#374151">• claim_id (FK)</text>
+    <text x="555" y="319" font-size="11" fill="#374151">• source_id (FK)</text>
+    <text x="555" y="336" font-size="11" fill="#374151">• support_type (supports/refutes)</text>
+
+    <!-- Relationships -->
+    <line x1="180" y1="75" x2="330" y2="75" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <polygon points="255,60 285,75 255,90 225,75" fill="#fef08a" stroke="#ca8a04" stroke-width="1.2"/>
+    <text x="255" y="79" font-size="10" font-weight="bold" fill="#854d0e" text-anchor="middle">initiates (1:N)</text>
+
+    <line x1="520" y1="75" x2="660" y2="75" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <polygon points="590,60 620,75 590,90 560,75" fill="#fef08a" stroke="#ca8a04" stroke-width="1.2"/>
+    <text x="590" y="79" font-size="10" font-weight="bold" fill="#854d0e" text-anchor="middle">aggregates (1:N)</text>
+
+    <line x1="390" y1="135" x2="320" y2="240" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <polygon points="355,175 375,190 355,205 335,190" fill="#fef08a" stroke="#ca8a04" stroke-width="1.2"/>
+    <text x="355" y="194" font-size="10" font-weight="bold" fill="#854d0e" text-anchor="middle">extracts</text>
+
+    <line x1="410" y1="290" x2="540" y2="290" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <polygon points="475,275 505,290 475,305 445,290" fill="#fef08a" stroke="#ca8a04" stroke-width="1.2"/>
+    <text x="475" y="294" font-size="10" font-weight="bold" fill="#854d0e" text-anchor="middle">verifies</text>
+
+    <path d="M 730 135 L 730 200 L 670 240" stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="735" y="185" font-size="10" font-weight="bold" fill="#4b5563">proves (1:N)</text>
+  </svg>
+</body>
+</html>

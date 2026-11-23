@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { margin: 0; padding: 15px; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+</style>
+</head>
+<body>
+  <div id="dfd1">
+    <svg width="860" height="320" viewBox="0 0 860 320">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f2937" />
+        </marker>
+      </defs>
+      <!-- Subsystem 1: Decomposer -->
+      <circle cx="100" cy="70" r="50" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>
+      <text x="100" y="65" font-size="11" font-weight="bold" fill="#4c1d95" text-anchor="middle">1.0</text>
+      <text x="100" y="80" font-size="10" font-weight="bold" fill="#4c1d95" text-anchor="middle">Plan & Decompose</text>
+
+      <!-- Subsystem 2: Search & Scrape -->
+      <circle cx="290" cy="70" r="50" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>
+      <text x="290" y="65" font-size="11" font-weight="bold" fill="#4c1d95" text-anchor="middle">2.0</text>
+      <text x="290" y="80" font-size="10" font-weight="bold" fill="#4c1d95" text-anchor="middle">Search & Scrape</text>
+
+      <!-- Subsystem 3: Claim Extractor -->
+      <circle cx="480" cy="70" r="50" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>
+      <text x="480" y="65" font-size="11" font-weight="bold" fill="#4c1d95" text-anchor="middle">3.0</text>
+      <text x="480" y="80" font-size="10" font-weight="bold" fill="#4c1d95" text-anchor="middle">Claim Extraction</text>
+
+      <!-- Subsystem 4: Dual Judge -->
+      <circle cx="670" cy="70" r="50" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>
+      <text x="670" y="65" font-size="11" font-weight="bold" fill="#4c1d95" text-anchor="middle">4.0</text>
+      <text x="670" y="80" font-size="10" font-weight="bold" fill="#4c1d95" text-anchor="middle">Cross-Verification</text>
+
+      <!-- Subsystem 5: Synthesis & Graph -->
+      <circle cx="380" cy="230" r="55" fill="#fdf2f8" stroke="#be185d" stroke-width="2"/>
+      <text x="380" y="225" font-size="11" font-weight="bold" fill="#831843" text-anchor="middle">5.0</text>
+      <text x="380" y="240" font-size="10" font-weight="bold" fill="#831843" text-anchor="middle">Synthesis & Graph</text>
+
+      <!-- Store D1 -->
+      <rect x="620" y="210" width="160" height="45" fill="#fef9c3" stroke="#854d0e" stroke-width="1.5"/>
+      <text x="700" y="238" font-size="11" font-weight="bold" fill="#713f12" text-anchor="middle">D1: MongoDB Database</text>
+
+      <!-- Flows -->
+      <line x1="150" y1="70" x2="235" y2="70" stroke="#1f2937" stroke-width="1.5" marker-end="url(#ar2)"/>
+      <text x="195" y="62" font-size="9" fill="#1f2937" text-anchor="middle">queries</text>
+
+      <line x1="340" y1="70" x2="425" y2="70" stroke="#1f2937" stroke-width="1.5" marker-end="url(#ar2)"/>
+      <text x="385" y="62" font-size="9" fill="#1f2937" text-anchor="middle">raw text</text>
+
+      <line x1="530" y1="70" x2="615" y2="70" stroke="#1f2937" stroke-width="1.5" marker-end="url(#ar2)"/>
+      <text x="575" y="62" font-size="9" fill="#1f2937" text-anchor="middle">claims</text>
+
+      <path d="M 670 120 L 670 170 L 440 215" stroke="#1f2937" stroke-width="1.5" fill="none" marker-end="url(#ar2)"/>
+      <text x="590" y="160" font-size="9" fill="#1f2937">verdicts & citations</text>
+
+      <line x1="435" y1="230" x2="615" y2="230" stroke="#1f2937" stroke-width="1.5" marker-end="url(#ar2)"/>
+      <text x="525" y="222" font-size="9" fill="#1f2937" text-anchor="middle">persist records</text>
+    </svg>
+  </div>
+</body>
+</html>
