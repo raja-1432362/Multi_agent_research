@@ -25,3 +25,4 @@ docs/extracted_doc/
 # System
 .DS_Store
 Thumbs.db
+.vercel
