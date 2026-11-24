@@ -29,10 +29,10 @@ export default function App() {
   return (
     <>
       <header className="topbar">
-        <Link to="/" className="brand" onClick={() => setMobileMenuOpen(false)}>
+        <a href="/landing.html" className="brand" onClick={() => setMobileMenuOpen(false)}>
           <div className="nav-orb"></div>
           <span>Evidence Desk</span>
-        </Link>
+        </a>
 
         {/* Mobile menu toggle button */}
         <button
