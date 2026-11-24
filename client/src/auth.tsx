@@ -52,22 +52,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     login: async (email, password) => {
       const u = await api<User>("/auth/login", { method: "POST", json: { email, password } });
+      if (u.token) localStorage.setItem("auth_token", u.token);
       setUser(u);
       localStorage.setItem("evidence_user", JSON.stringify(u));
     },
     loginDemo,
     register: async (displayName, email, password) => {
       const u = await api<User>("/auth/register", { method: "POST", json: { displayName, email, password } });
+      if (u.token) localStorage.setItem("auth_token", u.token);
       setUser(u);
       localStorage.setItem("evidence_user", JSON.stringify(u));
     },
     logout: async () => {
       await api("/auth/logout", { method: "POST" }).catch(() => {});
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("evidence_user");
       setUser(null);
     },
     deleteAccount: async () => {
       await api("/auth/me", { method: "DELETE" }).catch(() => {});
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("evidence_user");
       setUser(null);
     },

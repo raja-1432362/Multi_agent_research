@@ -2,7 +2,7 @@ export type RunStatus = "queued" | "planning" | "searching" | "analysing" | "ver
 export const TERMINAL: RunStatus[] = ["completed", "failed", "cancelled"];
 export const STAGES: RunStatus[] = ["queued", "planning", "searching", "analysing", "verifying", "writing", "completed"];
 
-export interface User { id: string; email: string; displayName: string }
+export interface User { id: string; email: string; displayName: string; token?: string }
 export interface Run {
   _id: string;
   question: string;

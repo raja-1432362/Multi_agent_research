@@ -26,10 +26,17 @@ const API_BASE = getApiBase();
 
 export async function api<T>(path: string, init: RequestInit & { json?: unknown } = {}): Promise<T> {
   const { json, ...rest } = init;
+  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+
   const res = await fetch(`${API_BASE}${path}`, {
     credentials: "include",
     ...rest,
-    headers: { ...(json !== undefined ? { "Content-Type": "application/json" } : {}), ...rest.headers },
+    headers: {
+      ...(json !== undefined ? { "Content-Type": "application/json" } : {}),
+      ...authHeaders,
+      ...rest.headers,
+    },
     body: json !== undefined ? JSON.stringify(json) : rest.body,
   });
   const data = res.status === 204 ? null : await res.json().catch(() => null);

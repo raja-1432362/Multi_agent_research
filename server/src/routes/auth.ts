@@ -8,25 +8,38 @@ import { env } from "../config/env";
 
 export const authRouter = Router();
 
-const cookieOpts = { httpOnly: true, sameSite: "lax" as const, secure: env.NODE_ENV === "production", maxAge: 7 * 864e5 };
-const pub = (u: { _id: unknown; email: string; displayName: string }) => ({ id: String(u._id), email: u.email, displayName: u.displayName });
+const isProd = env.NODE_ENV === "production" || !env.CLIENT_ORIGIN.includes("localhost");
+const cookieOpts = {
+  httpOnly: true,
+  sameSite: (isProd ? "none" : "lax") as "none" | "lax",
+  secure: isProd,
+  maxAge: 7 * 864e5,
+};
+const pub = (u: { _id: unknown; email: string; displayName: string }, token?: string) => ({
+  id: String(u._id),
+  email: u.email,
+  displayName: u.displayName,
+  ...(token ? { token } : {}),
+});
 
 authRouter.post("/register", async (req, res) => {
   const body = registerSchema.parse(req.body);
   if (await User.exists({ email: body.email.toLowerCase() })) throw new HttpError(409, "An account with this email already exists");
   const user = await User.create({ email: body.email, displayName: body.displayName, passwordHash: await bcrypt.hash(body.password, 12) });
-  res.cookie(COOKIE, signToken(String(user._id)), cookieOpts).status(201).json(pub(user));
+  const token = signToken(String(user._id));
+  res.cookie(COOKIE, token, cookieOpts).status(201).json(pub(user, token));
 });
 
 authRouter.post("/login", async (req, res) => {
   const body = loginSchema.parse(req.body);
   const user = await User.findOne({ email: body.email.toLowerCase() });
   if (!user || !(await bcrypt.compare(body.password, user.passwordHash))) throw new HttpError(401, "Email or password is incorrect");
-  res.cookie(COOKIE, signToken(String(user._id)), cookieOpts).json(pub(user));
+  const token = signToken(String(user._id));
+  res.cookie(COOKIE, token, cookieOpts).json(pub(user, token));
 });
 
 authRouter.post("/logout", (_req, res) => {
-  res.clearCookie(COOKIE).json({ ok: true });
+  res.clearCookie(COOKIE, cookieOpts).json({ ok: true });
 });
 
 authRouter.get("/me", requireAuth, async (req, res) => {

@@ -18,7 +18,9 @@ export function signToken(userId: string): string {
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies?.[COOKIE];
+  const authHeader = req.headers.authorization;
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const token = bearerToken || req.cookies?.[COOKIE];
   if (!token) return void res.status(401).json({ error: "Not signed in" });
   try {
     const payload = jwt.verify(token, env.JWT_SECRET) as { sub: string };
