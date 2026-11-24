@@ -4,9 +4,25 @@ export class ApiError extends Error {
   }
 }
 
-const API_BASE = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}/api`
-  : "/api";
+function getApiBase(): string {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl || typeof envUrl !== "string") return "/api";
+
+  let clean = envUrl.trim();
+  // Fix accidental double paste like: https://abc.onrender.comhttps://abc.onrender.com
+  const match = clean.match(/^https?:\/\/[^\s"'<>]+/i);
+  if (match) {
+    clean = match[0];
+    const secondHttp = clean.indexOf("http", 8);
+    if (secondHttp !== -1) {
+      clean = clean.substring(0, secondHttp);
+    }
+  }
+  clean = clean.replace(/\/+$/, "");
+  return clean.endsWith("/api") ? clean : `${clean}/api`;
+}
+
+const API_BASE = getApiBase();
 
 export async function api<T>(path: string, init: RequestInit & { json?: unknown } = {}): Promise<T> {
   const { json, ...rest } = init;
