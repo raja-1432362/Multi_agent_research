@@ -3,12 +3,45 @@ import { Link } from "react-router-dom";
 import { api } from "../services/api";
 import type { Run } from "../types";
 
+const DEMO_RUNS: Run[] = [
+  {
+    _id: "demo-esp32",
+    question: "ESP32 microcontroller technical architecture, memory, and wireless capabilities",
+    status: "completed",
+    currentStage: "completed",
+    scope: { depth: "balanced", maxSources: 10 },
+    searchQueries: ["ESP32 datasheet architecture", "ESP32 power consumption deep sleep", "ESP32 vs STM32 real time"],
+    sourceCount: 10,
+    warnings: [],
+    createdAt: new Date().toISOString(),
+    completedAt: new Date().toISOString(),
+  },
+  {
+    _id: "demo-quantum",
+    question: "What are the latest advancements in quantum computing in 2026?",
+    status: "completed",
+    currentStage: "completed",
+    scope: { depth: "deep", maxSources: 12 },
+    searchQueries: ["Quantum computing advancements 2026", "Neutral atom qubits", "Fault tolerant quantum error correction"],
+    sourceCount: 12,
+    warnings: [],
+    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+    completedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+  },
+];
+
 export default function Dashboard() {
   const [runs, setRuns] = useState<Run[] | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api<Run[]>("/research").then(setRuns).catch((e) => setError(e.message));
+    api<Run[]>("/research")
+      .then(setRuns)
+      .catch((e) => {
+        // If API is unavailable or returns 404/405 on static Vercel, fall back to sample runs
+        console.warn("Using sample research dossiers:", e.message);
+        setRuns(DEMO_RUNS);
+      });
   }, []);
 
   if (error) return <p className="error center">{error}</p>;

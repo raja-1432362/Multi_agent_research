@@ -7,6 +7,13 @@ import CitationExporter from "../components/CitationExporter";
 import ContradictionMatrix from "../components/ContradictionMatrix";
 import CrossExamineChat from "../components/CrossExamineChat";
 import { Claim, Report, Run, RunEvent, Source, STAGES, TERMINAL } from "../types";
+import {
+  DEMO_ESP32_RUN,
+  DEMO_ESP32_REPORT,
+  DEMO_ESP32_CLAIMS,
+  DEMO_ESP32_SOURCES,
+  DEMO_ESP32_EVENTS,
+} from "../services/demoData";
 
 export default function RunPage() {
   const { id } = useParams();
@@ -22,6 +29,15 @@ export default function RunPage() {
   const loadedResult = useRef(false);
 
   const refresh = useCallback(async () => {
+    if (id?.startsWith("demo-")) {
+      setRun(DEMO_ESP32_RUN);
+      setEvents(DEMO_ESP32_EVENTS);
+      setSources(DEMO_ESP32_SOURCES);
+      setReport(DEMO_ESP32_REPORT);
+      setClaims(DEMO_ESP32_CLAIMS);
+      return DEMO_ESP32_RUN;
+    }
+
     try {
       const r = await api<Run>(`/research/${id}`);
       setRun(r);
@@ -38,6 +54,14 @@ export default function RunPage() {
       }
       return r;
     } catch (e) {
+      if (id?.startsWith("demo-")) {
+        setRun(DEMO_ESP32_RUN);
+        setEvents(DEMO_ESP32_EVENTS);
+        setSources(DEMO_ESP32_SOURCES);
+        setReport(DEMO_ESP32_REPORT);
+        setClaims(DEMO_ESP32_CLAIMS);
+        return DEMO_ESP32_RUN;
+      }
       setError(e instanceof Error ? e.message : "Could not load this run");
       return null;
     }
