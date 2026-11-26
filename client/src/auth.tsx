@@ -1,11 +1,13 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { api } from "./services/api";
+import { signInWithGoogleFirebase } from "./services/firebase";
 import type { User } from "./types";
 
 interface AuthCtx {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   loginDemo: () => void;
   register: (displayName: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -52,6 +54,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     login: async (email, password) => {
       const u = await api<User>("/auth/login", { method: "POST", json: { email, password } });
+      if (u.token) localStorage.setItem("auth_token", u.token);
+      setUser(u);
+      localStorage.setItem("evidence_user", JSON.stringify(u));
+    },
+    loginWithGoogle: async () => {
+      const idToken = await signInWithGoogleFirebase();
+      const u = await api<User>("/auth/google", { method: "POST", json: { idToken } });
       if (u.token) localStorage.setItem("auth_token", u.token);
       setUser(u);
       localStorage.setItem("evidence_user", JSON.stringify(u));

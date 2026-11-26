@@ -3,8 +3,9 @@ import bcrypt from "bcryptjs";
 import { AgentEvent, Claim, Report, ResearchRun, Source, SourceSnapshot, User, Workspace } from "../models";
 import { COOKIE, requireAuth, signToken } from "../middleware/auth";
 import { HttpError } from "../middleware/error";
-import { loginSchema, registerSchema } from "../validators/schemas";
+import { loginSchema, registerSchema, googleAuthSchema } from "../validators/schemas";
 import { env } from "../config/env";
+import { verifyFirebaseIdToken } from "../services/auth/firebase";
 
 export const authRouter = Router();
 
@@ -33,7 +34,30 @@ authRouter.post("/register", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
   const body = loginSchema.parse(req.body);
   const user = await User.findOne({ email: body.email.toLowerCase() });
-  if (!user || !(await bcrypt.compare(body.password, user.passwordHash))) throw new HttpError(401, "Email or password is incorrect");
+  if (!user || !user.passwordHash || !(await bcrypt.compare(body.password, user.passwordHash))) {
+    throw new HttpError(401, "Email or password is incorrect");
+  }
+  const token = signToken(String(user._id));
+  res.cookie(COOKIE, token, cookieOpts).json(pub(user, token));
+});
+
+authRouter.post("/google", async (req, res) => {
+  const body = googleAuthSchema.parse(req.body);
+  const gUser = await verifyFirebaseIdToken(body.idToken);
+
+  let user = await User.findOne({ email: gUser.email });
+  if (!user) {
+    user = await User.create({
+      email: gUser.email,
+      displayName: gUser.displayName,
+      authProvider: "google",
+      googleUid: gUser.uid,
+    });
+  } else if (!user.googleUid) {
+    user.googleUid = gUser.uid;
+    await user.save();
+  }
+
   const token = signToken(String(user._id));
   res.cookie(COOKIE, token, cookieOpts).json(pub(user, token));
 });

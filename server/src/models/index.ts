@@ -28,8 +28,10 @@ export type ChangeStatus = (typeof CHANGE_STATUSES)[number];
 const userSchema = new Schema(
   {
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    passwordHash: { type: String, required: true },
+    passwordHash: { type: String, required: false },
     displayName: { type: String, required: true, trim: true },
+    authProvider: { type: String, enum: ["local", "google"], default: "local" },
+    googleUid: String,
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );

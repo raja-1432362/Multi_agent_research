@@ -12,6 +12,7 @@ const schema = z.object({
   TAVILY_API_KEY: z.string().min(1, "TAVILY_API_KEY is required"),
   MAX_RUNS_PER_DAY: z.coerce.number().default(5),
   MAX_SOURCES_CAP: z.coerce.number().default(15),
+  FIREBASE_PROJECT_ID: z.string().trim().optional(),
 });
 
 const parsed = schema.safeParse(process.env);
