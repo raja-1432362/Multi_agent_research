@@ -1,4 +1,69 @@
-import { Claim, Report, Run, RunEvent, Source } from "../types";
+import { Claim, Report, Run, RunEvent, Source, SourceSnapshot, Workspace } from "../types";
+
+export const DEMO_WORKSPACE: Workspace = {
+  _id: "demo-ws-1",
+  name: "Sample B2B Competitor Watch (Demo Data)",
+  description: "Demonstration workspace showing how Evidence Desk monitors official pricing pages, release notes, and documentation.",
+  competitors: [
+    { _id: "dc1", name: "Espressif IoT", domain: "espressif.com", notes: "Hardware SoC & SDK documentation" },
+  ],
+  approvedSources: [
+    {
+      _id: "ds1",
+      label: "ESP32 Official Product Page",
+      publisher: "Espressif Systems",
+      url: "https://www.espressif.com/en/products/socs/esp32",
+      canonicalUrl: "https://espressif.com/en/products/socs/esp32",
+      domain: "espressif.com",
+      sourceType: "official_page",
+      isOfficial: true,
+      enabled: true,
+      addedAt: new Date().toISOString(),
+    },
+    {
+      _id: "ds2",
+      label: "ESP-IDF Power Docs",
+      publisher: "Espressif Docs",
+      url: "https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/power_management.html",
+      canonicalUrl: "https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/power_management.html",
+      domain: "docs.espressif.com",
+      sourceType: "documentation",
+      isOfficial: true,
+      enabled: true,
+      addedAt: new Date().toISOString(),
+    },
+  ],
+  schedule: {
+    cadence: "weekly",
+    defaultQuestion: "What changed in competitor product specs, SDK release notes, or documentation?",
+    lastRunAt: new Date().toISOString(),
+    nextRunAt: new Date(Date.now() + 7 * 864e5).toISOString(),
+  },
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+export const DEMO_SNAPSHOTS: SourceSnapshot[] = [
+  {
+    _id: "snap1",
+    workspaceId: "demo-ws-1",
+    runId: "demo-esp32",
+    canonicalUrl: "https://espressif.com/en/products/socs/esp32",
+    url: "https://www.espressif.com/en/products/socs/esp32",
+    domain: "espressif.com",
+    publisher: "Espressif Systems",
+    title: "ESP32 Series Datasheet",
+    sourceType: "official_page",
+    publishedAt: "2024-01-15",
+    retrievedAt: new Date().toISOString(),
+    contentHash: "demo-hash-1",
+    fetchStatus: "ok",
+    changeStatus: "changed",
+    diffSummary: "Detected 1 new/updated statement(s) and 1 removed statement(s).",
+    addedLines: ["Updated SDK support notice for ESP-IDF v5.x release cycle."],
+    removedLines: ["Legacy ESP-IDF v4.4 maintenance reference."],
+  },
+];
 
 export const DEMO_ESP32_RUN: Run = {
   _id: "demo-esp32",

@@ -6,6 +6,7 @@ import rateLimit from "express-rate-limit";
 import { env } from "./config/env";
 import { authRouter } from "./routes/auth";
 import { researchRouter } from "./routes/research";
+import { workspaceRouter } from "./routes/workspaces";
 import { errorHandler } from "./middleware/error";
 
 export function createApp() {
@@ -23,7 +24,7 @@ export function createApp() {
         if (/^https:\/\/.*\.vercel\.app$/.test(origin)) return callback(null, true);
         // Allow configured CLIENT_ORIGIN
         if (origin === env.CLIENT_ORIGIN) return callback(null, true);
-        return callback(null, true);
+        return callback(new Error("Origin not allowed by CORS"));
       },
       credentials: true,
     })
@@ -35,6 +36,7 @@ export function createApp() {
   app.use("/api", rateLimit({ windowMs: 15 * 60_000, limit: 600, standardHeaders: true, legacyHeaders: false }));
   app.use("/api/auth", rateLimit({ windowMs: 15 * 60_000, limit: 30, standardHeaders: true, legacyHeaders: false }), authRouter);
   app.use("/api/research", researchRouter);
+  app.use("/api/workspaces", workspaceRouter);
   app.use("/api", (_req, res) => res.status(404).json({ error: "Not found" }));
   app.use(errorHandler);
   return app;

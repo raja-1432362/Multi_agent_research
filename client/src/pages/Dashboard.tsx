@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../auth";
 import { api } from "../services/api";
 import type { Run } from "../types";
 
@@ -31,28 +32,45 @@ const DEMO_RUNS: Run[] = [
 ];
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [runs, setRuns] = useState<Run[] | null>(null);
+  const [isDemoRuns, setIsDemoRuns] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (user?.id === "demo-user") {
+      setRuns(DEMO_RUNS);
+      setIsDemoRuns(true);
+      return;
+    }
     api<Run[]>("/research")
-      .then(setRuns)
+      .then((list) => {
+        setRuns(list);
+        setIsDemoRuns(false);
+      })
       .catch((e) => {
-        // If API is unavailable or returns 404/405 on static Vercel, fall back to sample runs
-        console.warn("Using sample research dossiers:", e.message);
-        setRuns(DEMO_RUNS);
+        setError(e instanceof Error ? e.message : "Could not load research history");
+        setRuns([]);
       });
-  }, []);
+  }, [user?.id]);
 
-  if (error) return <p className="error center">{error}</p>;
   if (!runs) return <p className="center muted">Loading…</p>;
 
   return (
     <div className="page">
-      <div className="row between">
+      <div className="row between wrap" style={{ marginBottom: "1rem" }}>
         <h2>Research history</h2>
-        <Link to="/new" className="btn small">New research</Link>
+        <div className="row" style={{ gap: "0.6rem" }}>
+          <Link to="/workspaces" className="btn small ghost">Competitor Watchlists</Link>
+          <Link to="/new" className="btn small">New research</Link>
+        </div>
       </div>
+      {error && <p className="error" role="alert" style={{ marginBottom: "1rem" }}>{error}</p>}
+      {isDemoRuns && (
+        <div className="notice" style={{ marginBottom: "1rem" }}>
+          <strong>Demo Data:</strong> Showing sample research reports. Sign in with a real account to run live checks.
+        </div>
+      )}
       {runs.length === 0 ? (
         <div className="empty">
           <p>No research runs yet.</p>

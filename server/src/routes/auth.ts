@@ -1,6 +1,6 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import { AgentEvent, Claim, Report, ResearchRun, Source, User } from "../models";
+import { AgentEvent, Claim, Report, ResearchRun, Source, SourceSnapshot, User, Workspace } from "../models";
 import { COOKIE, requireAuth, signToken } from "../middleware/auth";
 import { HttpError } from "../middleware/error";
 import { loginSchema, registerSchema } from "../validators/schemas";
@@ -54,9 +54,11 @@ authRouter.delete("/me", requireAuth, async (req, res) => {
   const ids = runs.map((r) => r._id);
   await Promise.all([
     Source.deleteMany({ runId: { $in: ids } }),
+    SourceSnapshot.deleteMany({ userId: req.userId }),
     Claim.deleteMany({ runId: { $in: ids } }),
     Report.deleteMany({ runId: { $in: ids } }),
     AgentEvent.deleteMany({ runId: { $in: ids } }),
+    Workspace.deleteMany({ userId: req.userId }),
   ]);
   await ResearchRun.deleteMany({ userId: req.userId });
   await User.deleteOne({ _id: req.userId });

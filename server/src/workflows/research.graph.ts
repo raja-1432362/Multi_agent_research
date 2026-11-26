@@ -1,5 +1,5 @@
 import { END, START, StateGraph } from "@langchain/langgraph";
-import { AgentEvent, Claim, Report, ResearchRun, Source } from "../models";
+import { AgentEvent, Claim, Report, ResearchRun, Source, SourceSnapshot } from "../models";
 import { CancelledError, logEvent } from "./nodes/helpers";
 import { analyseEvidence, normalizeSources, planQueries, saveResult, searchNode, verifyClaims, writeReport } from "./nodes";
 import { ResearchState } from "./research.state";
@@ -15,7 +15,7 @@ const graph = new StateGraph(ResearchState)
   .addEdge(START, "plan_queries")
   .addEdge("plan_queries", "search_web")
   .addEdge("search_web", "normalize_sources")
-  // Too few sources -> skip straight to saving an "insufficient evidence" result.
+  // Too few usable sources -> skip straight to saving an "insufficient evidence" result.
   .addConditionalEdges("normalize_sources", (s) => (s.insufficient ? "save_result" : "analyse_evidence"))
   .addConditionalEdges("analyse_evidence", (s) => (s.insufficient ? "save_result" : "verify_claims"))
   .addEdge("verify_claims", "write_report")
@@ -31,6 +31,9 @@ export async function runResearch(runId: string): Promise<void> {
     await graph.invoke({
       runId,
       userId: String(run.userId),
+      workspaceId: run.workspaceId ? String(run.workspaceId) : undefined,
+      collectionMode: (run.collectionMode ?? "open_web") as "open_web" | "workspace_watchlist" | "hybrid",
+      startedAtMs: Date.now(),
       question: run.question,
       scope: {
         depth: (run.scope?.depth ?? "standard") as "quick" | "standard" | "deep",
@@ -42,9 +45,15 @@ export async function runResearch(runId: string): Promise<void> {
       sources: [],
       themes: [],
       disagreements: [],
+      changesSummary: [],
+      collectionWarnings: [],
       claims: [],
       report: null,
       insufficient: false,
+      sourcesAttempted: 0,
+      sourcesFailed: 0,
+      snapshotsChanged: 0,
+      quoteMatchRate: 0,
       errors: [],
       currentStage: "queued",
     });
@@ -60,6 +69,7 @@ export async function runResearch(runId: string): Promise<void> {
 export async function resetRun(runId: string) {
   await Promise.all([
     Source.deleteMany({ runId }),
+    SourceSnapshot.deleteMany({ runId }),
     Claim.deleteMany({ runId }),
     Report.deleteMany({ runId }),
     AgentEvent.deleteMany({ runId }),

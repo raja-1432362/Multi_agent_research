@@ -12,6 +12,7 @@ export interface SearchOptions {
   depth: "basic" | "advanced";
   dateFrom?: string;
   dateTo?: string;
+  includeDomains?: string[];
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -26,6 +27,7 @@ async function once(query: string, opts: SearchOptions): Promise<SearchHit[]> {
   };
   if (opts.dateFrom) body.start_date = opts.dateFrom;
   if (opts.dateTo) body.end_date = opts.dateTo;
+  if (opts.includeDomains && opts.includeDomains.length > 0) body.include_domains = opts.includeDomains;
 
   const res = await fetch("https://api.tavily.com/search", {
     method: "POST",

@@ -277,6 +277,11 @@ input:focus, textarea:focus, select:focus {
   color: var(--ink-3);
   font-size: 0.8rem;
 }
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
 .grid3 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -767,6 +772,7 @@ blockquote {
   .claim-id-tag {
     order: 2;
   }
+  .grid2,
   .grid3 {
     grid-template-columns: 1fr;
   }

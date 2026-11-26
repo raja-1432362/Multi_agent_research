@@ -1046,20 +1046,20 @@
 
       <div class="stats-row reveal">
         <div class="stat-cell">
-          <div class="stat-num">100%</div>
-          <div class="stat-caption">claims verified against<br>stored excerpts</div>
+          <div class="stat-num">Linked</div>
+          <div class="stat-caption">claims checked against<br>saved source snapshots</div>
         </div>
         <div class="stat-cell">
-          <div class="stat-num">48s</div>
-          <div class="stat-caption">median time from query<br>to cited report</div>
+          <div class="stat-num">Diffed</div>
+          <div class="stat-caption">pricing & release changes<br>flagged for review</div>
         </div>
         <div class="stat-cell">
-          <div class="stat-num">6-Node</div>
-          <div class="stat-caption">LangGraph agents<br>in one workflow</div>
+          <div class="stat-num">7-Node</div>
+          <div class="stat-caption">LangGraph workflow<br>with change checker</div>
         </div>
         <div class="stat-cell">
-          <div class="stat-num">0%</div>
-          <div class="stat-caption">unsupported hallucinations<br>in final outputs</div>
+          <div class="stat-num">Human</div>
+          <div class="stat-caption">review & corrections<br>before you decide</div>
         </div>
       </div>
 
@@ -1185,8 +1185,8 @@
           </p>
           <div class="pack-meta">
             <div>
-              <span style="font-size: calc(12 * var(--u)); color: rgba(255,255,255,.7);">Citation Accuracy</span>
-              <div style="font-size: calc(30 * var(--u)); font-weight: 300;">100%</div>
+              <span style="font-size: calc(12 * var(--u)); color: rgba(255,255,255,.7);">Source Binding</span>
+              <div style="font-size: calc(30 * var(--u)); font-weight: 300;">Cited</div>
             </div>
             <a href="/register" class="accent" style="color: #fff;">Explore flow →</a>
           </div>
@@ -1198,14 +1198,14 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg>
           </div>
           <span style="font-family: var(--mono); font-size: calc(12 * var(--u)); letter-spacing: .08em; margin-top: calc(46 * var(--u)); color: var(--ink-2);">VERBATIM MATCHING</span>
-          <h3 style="font-size: calc(32 * var(--u)); font-weight: 400; line-height: 1.12; margin-top: calc(12 * var(--u));">Code-Enforced Verifier</h3>
+          <h3 style="font-size: calc(32 * var(--u)); font-weight: 400; line-height: 1.12; margin-top: calc(12 * var(--u));">Code-Enforced Quote Check</h3>
           <p style="font-size: calc(16.5 * var(--u)); line-height: 1.5; margin-top: calc(14 * var(--u)); color: var(--ink-2);">
-            If an excerpt does not exist verbatim inside the database crawl, it is instantly discarded by code guardrails.
+            If a quoted excerpt does not exist verbatim in the saved snapshot, code guardrails discard it and mark the claim as lacking evidence.
           </p>
           <div class="pack-meta">
             <div>
-              <span style="font-size: calc(12 * var(--u)); color: var(--ink-3);">Hallucination Rate</span>
-              <div style="font-size: calc(30 * var(--u)); font-weight: 300;">0.0%</div>
+              <span style="font-size: calc(12 * var(--u)); color: var(--ink-3);">Verification</span>
+              <div style="font-size: calc(30 * var(--u)); font-weight: 300;">Assisted</div>
             </div>
             <a href="/register" class="accent">Inspect verifier →</a>
           </div>

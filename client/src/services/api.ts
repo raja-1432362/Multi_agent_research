@@ -43,3 +43,20 @@ export async function api<T>(path: string, init: RequestInit & { json?: unknown 
   if (!res.ok) throw new ApiError(res.status, (data as { error?: string } | null)?.error ?? `Request failed (${res.status})`);
   return data as T;
 }
+
+export async function downloadApiFile(path: string, filename: string): Promise<void> {
+  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+  const res = await fetch(`${API_BASE}${path}`, {
+    credentials: "include",
+    headers: authHeaders,
+  });
+  if (!res.ok) throw new ApiError(res.status, `Download failed (${res.status})`);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { env } from "./config/env";
 import { createApp } from "./app";
 import { ResearchRun, TERMINAL } from "./models";
+import { startWorkspaceScheduler } from "./services/scheduler";
 
 async function main() {
   await mongoose.connect(env.MONGODB_URI);
@@ -14,6 +15,7 @@ async function main() {
   );
   if (res.modifiedCount) console.log(`Marked ${res.modifiedCount} interrupted run(s) as failed`);
 
+  startWorkspaceScheduler();
   createApp().listen(env.PORT, () => console.log(`API listening on http://localhost:${env.PORT}`));
 }
 

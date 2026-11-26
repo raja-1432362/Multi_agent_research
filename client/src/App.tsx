@@ -7,6 +7,8 @@ import Dashboard from "./pages/Dashboard";
 import NewResearch from "./pages/NewResearch";
 import RunPage from "./pages/RunPage";
 import Settings from "./pages/Settings";
+import Workspaces from "./pages/Workspaces";
+import WorkspaceDetail from "./pages/WorkspaceDetail";
 
 function Protected({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -53,6 +55,7 @@ export default function App() {
         <nav className={`nav-links ${mobileMenuOpen ? "open" : ""}`}>
           {user ? (
             <>
+              <Link to="/workspaces" onClick={() => setMobileMenuOpen(false)}>Watchlists</Link>
               <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>History</Link>
               <Link to="/new" className="btn small" onClick={() => setMobileMenuOpen(false)}>New research</Link>
               <Link to="/settings" onClick={() => setMobileMenuOpen(false)}>Settings</Link>
@@ -81,6 +84,8 @@ export default function App() {
           <Route path="/login" element={<AuthPage mode="login" />} />
           <Route path="/register" element={<AuthPage mode="register" />} />
           <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+          <Route path="/workspaces" element={<Protected><Workspaces /></Protected>} />
+          <Route path="/workspaces/:id" element={<Protected><WorkspaceDetail /></Protected>} />
           <Route path="/new" element={<Protected><NewResearch /></Protected>} />
           <Route path="/research/:id" element={<Protected><RunPage /></Protected>} />
           <Route path="/settings" element={<Protected><Settings /></Protected>} />
