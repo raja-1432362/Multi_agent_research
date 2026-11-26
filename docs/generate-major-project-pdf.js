@@ -281,19 +281,19 @@ function generateMajorProjectReport() {
 
   subHeading("What is Evidence Desk?");
   bodyParagraph(
-    "Evidence Desk is an AI-powered, multi-agent grounded research and fact-verification assistant. While standard Large Language Models (LLMs) such as ChatGPT or Claude generate fluent prose, they frequently suffer from hallucinations, out-of-date training data, and lack of verifiable citations. Evidence Desk solves these fundamental issues by replacing black-box generation with a transparent, evidence-backed research pipeline."
+    "Evidence Desk is a competitor intelligence and multi-agent source-backed research platform built for small B2B product teams, founders, and researchers. While standard chatbots generate fluent prose, they often hallucinate dates, blend outdated details with current specs, or omit verifiable citations. Evidence Desk replaces opaque generation with an inspectable research and monitoring pipeline."
   );
   bodyParagraph(
-    "The application orchestrates autonomous agents that break down complex user questions into targeted search queries, scrape live verified sources from the internet, extract verifiable atomic factual claims, cross-examine evidence across opposing viewpoints, and synthesize a fully cited research dossier with an interactive Knowledge Graph and Contradiction Radar."
+    "The system lets users create isolated Competitor Workspaces with approved public sources (official product/pricing pages, docs, release notes, blogs, RSS feeds, and uploaded text documents), run manual or recurring checks, compare new snapshots against earlier ones using SHA-256 content hashes and line diffs, extract atomic testable claims, separate deterministic substring quote verification from AI meaning checks, and let humans approve or correct findings."
   );
 
   subHeading("Objectives of the Project");
-  bulletItem("Automated Multi-Source Research", "Automatically search and scrape academic and industry web sources via intelligent query decomposition.");
-  bulletItem("Atomic Claim Decomposition", "Extract fine-grained, self-contained factual claims from raw text rather than presenting opaque paragraphs.");
-  bulletItem("Bidirectional Verification", "Cross-verify each claim against retrieved sources using a dual-judge LLM pipeline to classify verdicts (Supported, Debated, Refuted).");
-  bulletItem("Contradiction Radar", "Detect conflicts and disputes across multiple external sources and display exact disagreeing statements.");
-  bulletItem("Visual Knowledge Graph", "Render interactive node-edge graphs linking researchers, topics, claims, and verified citations.");
-  bulletItem("Grounded Cross-Examine Chat", "Enable interactive follow-up Q&A strictly restricted to verified evidence stored in the dossier.");
+  bulletItem("Competitor & Market Watchlists", "Monitor approved public company URLs, RSS feeds, changelogs, and uploaded documents inside isolated user workspaces.");
+  bulletItem("Snapshot Diff & Change Detection", "Compare new source snapshots against earlier versions to surface pricing, feature, policy, or documentation changes.");
+  bulletItem("Controlled & Polite Collection", "Respect RFC 9309 robots.txt rules, reject SSRF private/local URLs, never bypass logins/CAPTCHAs/paywalls, and report failures visibly.");
+  bulletItem("Dual Evidence Verification", "Keep two checks separate: a deterministic Code Quote Check (verbatim substring match) and an AI Meaning Check (Supported, Contradicted, Not enough evidence).");
+  bulletItem("Human-in-the-Loop Review", "Allow researchers to approve, flag, or correct AI findings, export Markdown/PDF/BibTeX/APA/IEEE reports, and inspect disagreements.");
+  bulletItem("Secure Multi-Provider Access", "Support Email/Password (bcryptjs + JWT) and Firebase Continue with Google Sign-In alongside strict workspace/run isolation.");
 
   subHeading("Purpose & Proposed System");
   bodyParagraph(
@@ -310,29 +310,28 @@ function generateMajorProjectReport() {
     ["Requirement Category", "Specification", "Purpose / Role"],
     [
       ["Operating System", "Windows 10 / 11 / Linux / macOS", "Development and host deployment"],
-      ["Frontend Framework", "React 19, TypeScript, TailwindCSS v4", "High-performance reactive user interface"],
+      ["Frontend Framework", "React 18, TypeScript, Vite 6, Custom CSS", "Responsive glassmorphism UI (Vercel)"],
       ["3D & Graph Visualization", "Three.js 0.170, @xyflow/react", "WebGL pond hero and interactive knowledge graph"],
-      ["Backend Runtime", "Node.js (v20+), Express, TypeScript", "REST API & agent orchestration server"],
-      ["Multi-Agent Framework", "LangGraph.js (StateGraph)", "Autonomous agent coordination & state machine"],
-      ["AI Models & APIs", "Google Gemini 2.5 API (flash-preview)", "Claim extraction, verification judge, synthesis"],
-      ["Search & Scraping API", "Tavily AI Search API", "Real-time web search and content extraction"],
-      ["Database Tool", "MongoDB Atlas / Mongoose ORM", "NoSQL storage for claims, sources, and graphs"],
-      ["Client Development Server", "Vite 6.0", "Fast HMR and bundling on http://localhost:5173"],
+      ["Backend Runtime", "Node.js (v22+), Express 5, TypeScript, Zod", "REST API, validation & scheduler (Render)"],
+      ["Multi-Agent Framework", "LangGraph.js (@langchain/langgraph)", "Stateful workflow & snapshot change checking"],
+      ["AI & Search APIs", "Google Gemini API, Tavily API, arXiv API", "Planning, claim extraction, meaning check & search"],
+      ["Authentication", "JWT + bcryptjs + Firebase Google Auth", "Dual cookie/Bearer JWT & RS256 Google sign-in"],
+      ["Database Tool", "MongoDB Atlas / Mongoose ODM", "Workspaces, snapshots, claims, sources & reports"],
+      ["Testing & Export", "Vitest, Supertest, PDFKit, Markdown", "Automated eval/isolation tests & PDF/MD exports"],
       ["Hardware (Minimum)", "Intel Core i3/i5, 8 GB RAM, 256 GB SSD", "Local dev server and browser execution"],
     ],
     [120, 195, 180]
   );
 
   subHeading("Future Scope & Possibilities");
-  bulletItem("Automated PDF / Word Dossier Export", "Allowing one-click export of complete verified research reports with embedded bibliography.");
-  bulletItem("Multi-Modal Document Intake", "Enabling users to upload research papers (PDF), datasets (CSV), and audio recordings for verification.");
-  bulletItem("Real-time Collaborative Research", "Shared multi-user evidence desks allowing team members to annotate and debate claims simultaneously.");
-  bulletItem("Automated Fact-Checking Extension", "A Chrome browser extension to verify news articles and tweets on-the-fly using Evidence Desk agents.");
+  bulletItem("Slack / Email Change Alerts", "Opt-in notifications summarizing detected competitor snapshot diffs.");
+  bulletItem("JavaScript-Rendered Page Support", "Optional headless browser rendering for public SPA docs while respecting site terms.");
+  bulletItem("Multi-Seat Team Collaboration", "Role-based shared workspaces for larger product and analyst teams.");
 
   subHeading("Advantages of Proposed System");
-  bulletItem("Zero Unverified Hallucinations", "Every single statement links back to atomic source citations [S1, S2].");
-  bulletItem("Transparent Contradiction Radar", "Highlights where the internet disagrees rather than averaging out contradictory views.");
-  bulletItem("Complete Free-Tier Stack", "Built entirely using Google Gemini free tier, Tavily free search credits, and MongoDB free cluster.");
+  bulletItem("Inspectable Provenance", "Every claim links to saved snapshots, distinguishing official vs external sources and explicit vs unknown publication dates.");
+  bulletItem("Transparent Failure & Contradiction Handling", "Highlights disagreements and failed/blocked fetches honestly rather than hiding errors or presenting stale data as fresh.");
+  bulletItem("Free-Tier Friendly Architecture", "Runs on React/Vite (Vercel), Express/Node (Render), MongoDB Atlas free cluster, Gemini API, Tavily, and Firebase Auth.");
 
   // ==========================================================
   // PAGE 6: COCOMO MODEL ESTIMATION
@@ -502,33 +501,28 @@ function generateMajorProjectReport() {
     "Evidence Desk utilizes MongoDB with Mongoose ODM for flexible NoSQL document storage of multi-agent states and graph structures."
   );
 
-  const schemaCode = `// User Schema (models/User.ts)
-const UserSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true },
-  fullName: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
-});
+  const schemaCode = `// Workspace Watchlist Schema (server/src/models/index.ts)
+const workspaceSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+  name: { type: String, required: true, trim: true },
+  competitors: [{ name: String, domain: String, notes: String }],
+  approvedSources: [{
+    label: String, publisher: String, url: String, canonicalUrl: String,
+    sourceType: { type: String, enum: SOURCE_TYPES }, isOfficial: Boolean, uploadedText: String
+  }],
+  schedule: { cadence: { type: String, enum: ["manual", "daily", "weekly"] }, nextRunAt: Date }
+}, { timestamps: true });
 
-// Research Dossier Schema (models/Research.ts)
-const ResearchSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  query: { type: String, required: true },
-  topic: { type: String },
-  status: { type: String, enum: ['running', 'completed', 'failed'] },
-  factualScore: { type: Number, default: 0 },
-  summary: { type: String },
-  createdAt: { type: Date, default: Date.now }
-});
-
-// Claim Schema (models/Claim.ts)
-const ClaimSchema = new Schema({
-  researchId: { type: Schema.Types.ObjectId, ref: 'Research', required: true },
-  claimId: { type: String, required: true },
-  text: { type: String, required: true },
-  status: { type: String, enum: ['supported', 'debated', 'refuted'] },
-  confidence: { type: Number, min: 0, max: 1 },
-  sourceCitations: [{ sourceId: String, quote: String }]
+// Versioned Source Snapshot Schema (for Diff & Change Tracking)
+const sourceSnapshotSchema = new Schema({
+  workspaceId: { type: Schema.Types.ObjectId, ref: "Workspace", required: true, index: true },
+  canonicalUrl: { type: String, required: true },
+  publishedAt: { type: String, default: null }, // null when unknown; never guessed
+  retrievedAt: { type: Date, default: Date.now },
+  contentHash: String, normalizedText: String,
+  fetchStatus: { type: String, enum: ["ok", "failed", "blocked", "robots_disallowed"] },
+  changeStatus: { type: String, enum: ["new", "changed", "unchanged", "failed", "stale_fallback"] },
+  addedLines: [String], removedLines: [String]
 });`;
 
   doc.rect(50, doc.y, 495, 260).fillAndStroke("#1e1e2f", "#33334d");
@@ -546,116 +540,90 @@ const ClaimSchema = new Schema({
   doc.addPage();
   sectionHeading("2.0", "Core Source Code Excerpts");
 
-  subHeading("1. Multi-Agent StateGraph Pipeline (server/src/services/agent.ts)");
+  subHeading("1. Multi-Agent StateGraph Pipeline (server/src/workflows/research.graph.ts)");
   bodyParagraph(
-    "The LangGraph.js state machine coordinates the 6 autonomous stages of the factual research pipeline:"
+    "The LangGraph.js state machine coordinates the 7 autonomous stages of research, snapshot diffing, verification, and synthesis:"
   );
 
-  const agentCode = `import { StateGraph, END } from "@langchain/langgraph";
-import { ResearchState } from "../types/agent";
-import { planQueriesNode } from "./nodes/planner";
-import { webSearchNode } from "./nodes/search";
-import { extractClaimsNode } from "./nodes/extractor";
-import { verifyClaimsNode } from "./nodes/verifier";
-import { synthesizeReportNode } from "./nodes/synthesizer";
+  const agentCode = `import { END, START, StateGraph } from "@langchain/langgraph";
+import { analyseEvidence, normalizeSources, planQueries, saveResult, searchNode, verifyClaims, writeReport } from "./nodes";
+import { ResearchState } from "./research.state";
 
-export function createResearchGraph() {
-  const workflow = new StateGraph<ResearchState>({
-    channels: {
-      query: { value: (x, y) => y ?? x },
-      sources: { value: (x, y) => y ?? x },
-      claims: { value: (x, y) => y ?? x },
-      contradictions: { value: (x, y) => y ?? x },
-      report: { value: (x, y) => y ?? x },
-      step: { value: (x, y) => y ?? x }
-    }
-  });
+const graph = new StateGraph(ResearchState)
+  .addNode("plan_queries", planQueries)
+  .addNode("search_web", searchNode)
+  .addNode("normalize_sources", normalizeSources)
+  .addNode("analyse_evidence", analyseEvidence)
+  .addNode("verify_claims", verifyClaims)
+  .addNode("write_report", writeReport)
+  .addNode("save_result", saveResult)
+  .addEdge(START, "plan_queries")
+  .addEdge("plan_queries", "search_web")
+  .addEdge("search_web", "normalize_sources")
+  .addConditionalEdges("normalize_sources", (s) => (s.insufficient ? "save_result" : "analyse_evidence"))
+  .addConditionalEdges("analyse_evidence", (s) => (s.insufficient ? "save_result" : "verify_claims"))
+  .addEdge("verify_claims", "write_report")
+  .addEdge("write_report", "save_result")
+  .addEdge("save_result", END)
+  .compile();`;
 
-  workflow.addNode("planner", planQueriesNode);
-  workflow.addNode("search", webSearchNode);
-  workflow.addNode("extractor", extractClaimsNode);
-  workflow.addNode("verifier", verifyClaimsNode);
-  workflow.addNode("synthesizer", synthesizeReportNode);
-
-  workflow.addEdge("planner", "search");
-  workflow.addEdge("search", "extractor");
-  workflow.addEdge("extractor", "verifier");
-  workflow.addEdge("verifier", "synthesizer");
-  workflow.addEdge("synthesizer", END);
-
-  workflow.setEntryPoint("planner");
-  return workflow.compile();
-}`;
-
-  doc.rect(50, doc.y, 495, 260).fillAndStroke("#1e1e2f", "#33334d");
+  doc.rect(50, doc.y, 495, 250).fillAndStroke("#1e1e2f", "#33334d");
   doc.fontSize(7.5).font("Courier").fillColor("#34d399")
     .text(agentCode, 60, doc.y + 10, { width: 475, lineGap: 1.5 });
 
   doc.addPage();
-  subHeading("2. Google Gemini API Dual-Judge Client (server/src/services/llm/gemini.ts)");
+  subHeading("2. Deterministic Quote Check & Snapshot Diffing (server/src/utils/evidence.ts)");
   bodyParagraph(
-    "The Gemini service wraps the Google GenAI SDK, providing grounded structured responses using Google Gemini 2.5:"
+    "Code-enforced substring verification, SSRF public URL check, and SHA-256 snapshot diff comparison:"
   );
 
-  const geminiCode = `import { GoogleGenAI } from "@google/genai";
+  const geminiCode = `export function excerptInSource(excerpt: string, sourceText: string): boolean {
+  const e = normText(excerpt);
+  if (e.length < 8) return false;
+  return normText(sourceText).includes(e);
+}
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-export async function verifyClaimWithGemini(claimText: string, sourceText: string) {
-  const prompt = \`Given this premise from a source:
-"\${sourceText}"
-Evaluate whether the following claim is SUPPORTED, REFUTED, or UNMENTIONED:
-Claim: "\${claimText}"
-Return valid JSON: { "verdict": "supported"|"refuted"|"unmentioned", "quote": string, "confidence": number }\`;
-
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      temperature: 0.1, // low temperature for deterministic evaluation
-      thinkingConfig: { thinkingBudget: 0 }
-    }
-  });
-
-  return JSON.parse(response.text || "{}");
+export function diffSnapshots(oldText: string | null | undefined, newText: string): SnapshotDiffResult {
+  if (!oldText || !oldText.trim()) {
+    return { changeStatus: "new", diffSummary: "Initial baseline snapshot captured.", addedLines: [], removedLines: [] };
+  }
+  if (computeContentHash(oldText) === computeContentHash(newText)) {
+    return { changeStatus: "unchanged", diffSummary: "No content changes detected.", addedLines: [], removedLines: [] };
+  }
+  const addedLines = newUnits.filter((u) => !oldSet.has(normText(u))).slice(0, 12);
+  const removedLines = oldUnits.filter((u) => !newSet.has(normText(u))).slice(0, 12);
+  return { changeStatus: "changed", diffSummary: \`Detected \${addedLines.length} new/updated and \${removedLines.length} removed.\`, addedLines, removedLines };
 }`;
 
-  doc.rect(50, doc.y, 495, 230).fillAndStroke("#1e1e2f", "#33334d");
+  doc.rect(50, doc.y, 495, 210).fillAndStroke("#1e1e2f", "#33334d");
   doc.fontSize(7.5).font("Courier").fillColor("#fbbf24")
     .text(geminiCode, 60, doc.y + 10, { width: 475, lineGap: 1.5 });
 
-  doc.y += 245;
+  doc.y += 225;
   subHeading("3. Frontend React Application Router (client/src/App.tsx)");
   bodyParagraph(
-    "React Router DOM setup providing responsive navigation, route guards, and dynamic drawer navigation:"
+    "React Router setup with Watchlists, History, Research runs, and 3D hero logo link:"
   );
 
   const clientCode = `export default function App() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
-    <div className="app-layout">
+    <>
       <header className="topbar">
-        <Link to="/" className="brand">
-          <div className="nav-orb" />
-          <span>Evidence Desk</span>
-        </Link>
-        <nav className="desktop-menu">
-          <Link to="/">Home</Link>
-          <Link to="/research">New Research</Link>
-          <Link to="/dashboard">History</Link>
+        <a href="/landing.html" className="brand"><div className="nav-orb" /><span>Evidence Desk</span></a>
+        <nav className={\`nav-links \${mobileMenuOpen ? "open" : ""}\`}>
+          {user && <><Link to="/workspaces">Watchlists</Link><Link to="/dashboard">History</Link><Link to="/new">New research</Link></>}
         </nav>
       </header>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<AuthPage />} />
-        <Route path="/research" element={<Protected><NewResearch /></Protected>} />
-        <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
-        <Route path="/run/:id" element={<Protected><RunPage /></Protected>} />
+        <Route path="/login" element={<AuthPage mode="login" />} />
+        <Route path="/workspaces" element={<Protected><Workspaces /></Protected>} />
+        <Route path="/workspaces/:id" element={<Protected><WorkspaceDetail /></Protected>} />
+        <Route path="/research/:id" element={<Protected><RunPage /></Protected>} />
       </Routes>
-    </div>
+    </>
   );
 }`;
 
@@ -667,12 +635,12 @@ Return valid JSON: { "verdict": "supported"|"refuted"|"unmentioned", "quote": st
   // PAGE 17: CONCLUSION & ACKNOWLEDGEMENT
   // ==========================================================
   doc.addPage();
-  sectionHeading("2.1", "Conclusion");
+  sectionHeading("2.1", "Conclusion & Limitations");
   bodyParagraph(
-    "The Evidence Desk project successfully accomplishes its goal of transforming generative AI from an unreliable black box into a rigorous, verifiable research tool. By coupling multi-agent autonomous query decomposition with real-time web scraping, fine-grained atomic claim extraction, and dual-judge entailment verification, the system achieves a verified factual grounding rate of over 94% on real-world queries."
+    "Evidence Desk demonstrates how multi-agent workflows can support B2B competitor tracking and grounded research with transparent provenance. By coupling controlled source collection (SSRF and RFC 9309 robots.txt checks), SHA-256 snapshot diffing, separate deterministic quote verification and AI meaning checks, and human finding review controls, the system surfaces verifiable findings while keeping humans in charge of decisions."
   );
   bodyParagraph(
-    "The integration of modern web technologies—React 19, TypeScript, Three.js 3D WebGL scenes, React Flow Knowledge Graph, and TailwindCSS—delivers an intuitive, aesthetically rich, and responsive user experience across desktops, tablets, and mobile devices."
+    "Honest Limitations: AI-assisted checks cannot guarantee ground truth or eliminate errors completely. Pages gated by logins, CAPTCHAs, paywalls, or heavy client-side JS are not bypassed and report failure visibly; publication dates are marked Unknown when omitted by the source. Always verify linked primary sources before acting."
   );
 
   doc.moveDown(1);

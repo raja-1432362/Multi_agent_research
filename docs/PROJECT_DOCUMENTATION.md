@@ -1,85 +1,82 @@
-# Evidence Desk — AI Multi-Agent Research Assistant
-## Project Overview, Architecture & Guide
+# Evidence Desk — Competitor Intelligence & Research Assistant
+## Updated Project Overview, Architecture & User Guide
 
 ---
 
-### 1. What is Evidence Desk? (In Simple Words)
-When you ask standard AI chatbots (like ChatGPT or standard Gemini) a question, they write an essay that sounds smart, but they often **make up facts, hallucinate numbers, or give dead links**.
+### 1. What is Evidence Desk? (In Plain Words)
+Standard AI chatbots often generate smooth answers with fabricated dates, stale details, or unverified links, and they hide when sources disagree.
 
-**Evidence Desk** is an intelligent research system designed to fix that problem completely.
-Instead of guessing or writing from memory:
-1. It searches the **live internet** and **academic repositories (arXiv)**.
-2. It **saves and locks** every single web page it finds into a permanent database (MongoDB).
-3. It breaks the topic down into small testable claims (facts).
-4. An automated **AI Verifier** checks each claim against the saved website paragraphs. If an excerpt does not match word-for-word, it is thrown out.
-5. It writes a structured research report where **every single fact has a clickable button `[S1]`, `[S2]` that opens the exact original evidence**.
-
----
-
-### 2. What Problems Does It Solve?
-- **No Hallucinations:** The system cannot invent facts because every claim must be backed by a saved source excerpt.
-- **Traceable Citations:** You never have to wonder *"Where did this information come from?"* — you can click any claim to read the exact quotation.
-- **Academic Disagreements:** If two different studies contradict each other, it doesn't average them out — it flags them in a **Contradiction Radar**.
-- **Audit Trails:** All runs, sources, and claims are permanently stored in your own database.
+**Evidence Desk** is built for small B2B product teams, founders, and researchers to track competitor and market changes with inspectable evidence:
+1. **Monitor approved public sources** in isolated **Workspaces**: official company/product pages, pricing pages, public documentation, release notes/changelogs, company blogs, RSS/Atom feeds, and uploaded public documents.
+2. **Respect access rules**: checks `robots.txt` (RFC 9309), blocks private/local SSRF URLs, and never bypasses logins, CAPTCHAs, or paywalls.
+3. **Detect what changed**: compares new collected text against earlier snapshots using SHA-256 hashes and line diffs (`New`, `Changed`, `Unchanged`, `Failed`, or `Stale`).
+4. **Separate two evidence checks**:
+   - **Code Quote Check**: verifies in TypeScript code that the displayed quote appears verbatim in the saved source text.
+   - **AI Meaning Check**: evaluates whether the quote supports, contradicts, or lacks evidence (`Supported`, `Contradicted`, `Not enough evidence`).
+5. **Keep humans in control**: Evidence Desk never makes business decisions on your behalf. Users can inspect every citation, review disagreements, approve or correct findings, and export **PDF**, **Markdown (`.md`)**, or scholarly citations (**BibTeX**, **APA**, **IEEE**).
 
 ---
 
-### 3. How It Works (Step-by-Step Multi-Agent Pipeline)
-Evidence Desk uses **LangGraph.js**, which orchestrates multiple specialized AI agents working together like a professional research team:
+### 2. Multi-Agent Workflow (`LangGraph.js`)
 
 ```
-[User Question]
+[Workspace Watchlist or Research Question]
       │
       ▼
-1. Planner Agent (Gemini)      ──> Breaks question into 3-6 smart search queries
+1. Planner Agent (Gemini)        ──> Creates 3–6 focused queries & targets
       │
       ▼
-2. Searcher Tool (Tavily + arXiv) ──> Fetches real-time web pages & peer-reviewed papers
+2. Controlled Collector          ──> Fetches approved URLs, RSS, uploaded docs
+   (RFC 9309 + Tavily + arXiv)       (or domain-scoped / open web searches)
       │
       ▼
-3. Normalizer                  ──> Cleans URLs, removes duplicates & saves excerpts to MongoDB
+3. Normalizer & Change Checker   ──> Deduplicates URLs, saves SourceSnapshots,
+                                     computes SHA-256 diffs & flags failures
       │
       ▼
-4. Analyst Agent (Gemini)      ──> Extracts 10-20 atomic factual claims
+4. Analyst Agent (Gemini)        ──> Extracts atomic testable claims & disagreements
       │
       ▼
-5. Verifier Agent (Gemini)     ──> Verifies each claim against stored excerpts (Supported / Contradicted / Mixed)
+5. Dual Verifier                 ──> Code substring check + AI meaning verdict
       │
       ▼
-6. Report Writer Agent (Gemini)──> Writes structured report with clickable inline citations
-      │
-      ▼
-[Final Report + Knowledge Graph + Citations Export]
+6. Report Writer & Save          ──> Briefing with citations, unknown-date flags,
+                                     changes summary, warnings & run metrics
 ```
 
 ---
 
-### 4. Key Features Built Into the App
-1. **Interactive Knowledge Graph:** A 2D visual map powered by React Flow showing your research topic connected to verified claims and source links.
-2. **Contradiction Radar:** An automated matrix isolating disputed facts where different websites disagree.
-3. **Cross-Examine Chat Mode:** A follow-up chat where the AI is strictly forbidden from guessing — it answers *only* using your run's saved sources.
-4. **Scholarly Citation Exporter:** 1-click export of your sources into standard **BibTeX** (for LaTeX/Overleaf), **APA 7th**, and **IEEE** formats.
-5. **PDF Report Export:** Download a styled, clean PDF report with full bibliography.
-6. **Responsive Dark/Violet Interface:** Built with clean, readable modern typography that works seamlessly on mobile phones and desktops.
+### 3. Key Features Built Into the App
+1. **Competitor Workspaces (`Watchlists`)**: Add competitors, approved URLs/feeds/uploads, and optional recurring checks (`Manual`, `Daily`, `Weekly`).
+2. **What Changed Timeline**: View line-by-line additions/removals across snapshots, plus clear notices whenever a source failed or returned blocked/stale status.
+3. **Human Review & Corrections**: Approve, flag, or edit any claim (`Correct / Add Note`) directly on the report page.
+4. **Interactive Knowledge Graph (`@xyflow/react`)**: Explore topics, claims, and status connections visually.
+5. **Contradiction Radar**: Inspect contested claims where sources disagree side-by-side.
+6. **Grounded Cross-Examine Chat**: Ask follow-ups strictly bounded to saved sources from that run.
+7. **Flexible Authentication & Cloud Hosting**:
+   - Email/Password (`bcryptjs` + HTTP-only cookie & Bearer JWT)
+   - **Continue with Google** via Firebase Auth (verified on the backend using Google's RS256 x509 public keys)
+   - Instant Demo Mode (clearly labeled sample data)
+   - Frontend hosted on **Vercel**, Backend & Scheduler on **Render**, Database on **MongoDB Atlas**.
 
 ---
 
-### 5. Technology Stack (100% Free-Tier)
-| Part | Technology | Role |
+### 4. Technology Stack
+| Layer | Technology | Role |
 |---|---|---|
-| **Frontend** | React 18 + Vite + TypeScript | Fast user interface |
-| **Interactive Graph** | `@xyflow/react` (React Flow) | Node-based knowledge graph |
-| **Backend** | Node.js + Express 5 + TypeScript | API server and background orchestrator |
-| **Workflow Engine** | `@langchain/langgraph` | Multi-agent state machine |
-| **Primary AI Model** | Gemini Developer API | Free-tier language model |
-| **Live Web Search** | Tavily Search API | Search engine built for AI agents |
-| **Academic Search** | arXiv Public API | Free repository of scientific papers |
-| **Database** | MongoDB Atlas Free (M0) | Cloud database for saving evidence |
-| **Authentication** | JWT + bcryptjs | Secure login and user account privacy |
-| **Report Generation** | PDFKit | Generates downloadable research PDFs |
+| **Frontend** | React 18, Vite, TypeScript, Custom Responsive CSS | Responsive desktop & mobile UI + 3D landing page |
+| **Knowledge Graph** | `@xyflow/react` | Interactive topic-to-claim topology |
+| **Backend** | Node.js 22+, Express 5, TypeScript, Zod | Auth, workspace isolation, scheduler & API |
+| **Workflow Engine** | `@langchain/langgraph` | Stateful multi-agent pipeline |
+| **AI & Search** | Google Gemini API, Tavily Search, arXiv API | Planning, claim analysis, verification & reporting |
+| **Authentication** | JWT + bcryptjs + Firebase Auth (Google) | Secure account access & workspace ownership |
+| **Database** | MongoDB Atlas + Mongoose | Workspaces, snapshots, runs, sources, claims, reports |
+| **Exports & Testing** | PDFKit, Markdown Builder, Vitest + Supertest | Export reports & 21 automated tests |
 
 ---
 
-### 6. Summary for Your Resume / Portfolio
-> **Title:** AI-Powered Multi-Agent Research Assistant (Evidence Desk)  
-> **Description:** Developed a full-stack, stateful multi-agent research platform using React, Node.js, LangGraph.js, Gemini API, and MongoDB. The system autonomously plans multi-vector search queries, crawls live web and arXiv academic sources, atomizes factual claims, performs programmatic verbatim evidence checks to eliminate hallucinations, and produces cited, verifiable intelligence reports.
+### 5. Honest Limitations & What Cannot Be Guaranteed
+- Evidence Desk provides **AI-assisted checks and substring quote matching**, not guaranteed ground truth. Always inspect the linked primary sources before making product or business decisions.
+- Publication dates are displayed **only** when explicitly provided by the page or feed (`Published: Unknown` otherwise).
+- Sites requiring login, solving CAPTCHAs, behind paywalls, or relying purely on heavy client-side JS are not bypassed and will report collection failures openly.
+- Built-in recurring schedules require a persistent Node host (such as Render) and adhere to daily per-user run quotas.

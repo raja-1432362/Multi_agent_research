@@ -1,6 +1,7 @@
-const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
+const pdfKitPath = path.join(__dirname, "..", "server", "node_modules", "pdfkit");
+const PDFDocument = fs.existsSync(pdfKitPath) ? require(pdfKitPath) : require("pdfkit");
 
 function buildPdf() {
   const outputPath = path.join(__dirname, "Evidence_Desk_Documentation.pdf");
@@ -8,7 +9,7 @@ function buildPdf() {
     margin: 50,
     size: "A4",
     info: {
-      Title: "Evidence Desk — Project Documentation",
+      Title: "Evidence Desk — Updated Project Documentation",
       Author: "Evidence Desk Multi-Agent Research Studio",
     },
   });
@@ -16,129 +17,123 @@ function buildPdf() {
   const stream = fs.createWriteStream(outputPath);
   doc.pipe(stream);
 
-  // PALETTE
-  const NAVY = "#0d0830";
   const PERI = "#4b3bd6";
   const ACCENT = "#6f78ff";
   const TEXT = "#1e1e2f";
   const MUTED = "#555566";
-  const OK = "#1b7f4b";
 
   // HEADER BANNER
   doc.rect(50, 45, 495, 80).fill("#140d3d");
-  doc.fillColor("#ffffff").fontSize(22).font("Helvetica-Bold").text("Evidence Desk", 68, 62);
-  doc.fontSize(11).font("Helvetica").fillColor("#c9b8ff").text("AI-Powered Multi-Agent Research Assistant — Complete Guide", 68, 92);
+  doc.fillColor("#ffffff").fontSize(22).font("Helvetica-Bold").text("Evidence Desk", 68, 60);
+  doc.fontSize(10.5).font("Helvetica").fillColor("#c9b8ff")
+    .text("Competitor Intelligence & Source-Backed Multi-Agent Research Assistant — Updated Guide", 68, 90, { width: 460 });
 
-  doc.moveDown(4.5);
+  doc.y = 142;
   doc.fillColor(TEXT);
 
   // SECTION 1: WHAT IS EVIDENCE DESK
-  doc.fontSize(15).font("Helvetica-Bold").fillColor(PERI).text("1. What is Evidence Desk? (In Simple Words)");
-  doc.moveDown(0.4);
-  doc.fontSize(10).font("Helvetica").fillColor(TEXT).text(
-    "When you ask standard chatbots (like ChatGPT or Gemini) a research question, they often produce persuasive essays with fabricated dates, numbers, or non-existent URLs.\n\n" +
-    "Evidence Desk solves this by enforcing an 'Auditing Courtroom' architecture. Instead of writing from memory, it searches live websites and scientific repositories (arXiv), permanently saves each excerpt in a database, extracts individual factual claims, and uses an AI Verifier to confirm every claim with verbatim evidence. Every sentence in the final report has a clickable citation link jumping directly to the verified source text.",
-    { lineGap: 3 }
+  doc.fontSize(14).font("Helvetica-Bold").fillColor(PERI).text("1. What is Evidence Desk? (In Plain Words)");
+  doc.moveDown(0.35);
+  doc.fontSize(9.5).font("Helvetica").fillColor(TEXT).text(
+    "Standard AI chatbots often generate smooth answers without verifiable citations, mix old and new facts, or hide disagreements between sources.\n\n" +
+    "Evidence Desk is built for B2B product teams, founders, and researchers to answer competitor, market, and research questions with inspectable proof. Instead of relying on unverified memory, it collects approved public sources (company pages, pricing, docs, release notes, RSS feeds, and uploaded public documents) plus permitted web/arXiv searches, saves snapshots in MongoDB, detects what changed since earlier runs, and links every claim to saved source text for human review.\n\n" +
+    "Important: Evidence Desk supports human research and review — it does not make business decisions for you, and AI-assisted checks do not guarantee ground truth.",
+    { lineGap: 2.5, align: "justify" }
   );
 
-  doc.moveDown(1.2);
+  doc.moveDown(0.9);
 
-  // SECTION 2: PROBLEMS IT SOLVES
-  doc.fontSize(15).font("Helvetica-Bold").fillColor(PERI).text("2. Key Problems Solved");
-  doc.moveDown(0.4);
+  // SECTION 2: KEY PROBLEMS SOLVED
+  doc.fontSize(14).font("Helvetica-Bold").fillColor(PERI).text("2. Key Capabilities & Guardrails");
+  doc.moveDown(0.35);
 
   const bullet = (title, desc) => {
-    doc.fontSize(10).font("Helvetica-Bold").fillColor(ACCENT).text("• " + title + ": ", { continued: true });
+    doc.fontSize(9.5).font("Helvetica-Bold").fillColor(ACCENT).text("• " + title + ": ", { continued: true });
     doc.font("Helvetica").fillColor(TEXT).text(desc, { lineGap: 2 });
+    doc.moveDown(0.15);
   };
 
-  bullet("Zero Hallucination Risk", "The AI model is forbidden from using outside unverified assumptions. Claims must match stored database text.");
-  bullet("Complete Traceability", "Clicking any [S1], [S2] marker instantly displays the original website title, domain, crawl timestamp, and paragraph.");
-  bullet("Academic Contradiction Radar", "When different papers disagree, it doesn't average them out. It flags conflicting evidence side-by-side.");
-  bullet("Data Ownership & History", "All research runs, extracted claims, and references are permanently saved in your own MongoDB cloud database.");
+  bullet("Competitor Watchlists (Workspaces)", "Isolate companies, approved public URLs, RSS feeds, uploaded docs, and recurring checks (Manual, Daily, Weekly) per workspace.");
+  bullet("Snapshot Diff & Change Detection", "SHA-256 content hashes and line diffs compare new snapshots with earlier ones (New, Changed, Unchanged, Failed, or Stale).");
+  bullet("Two Separate Evidence Checks", "1) A deterministic Code Quote Check verifies the exact quote exists in saved text; 2) an AI Meaning Check evaluates whether it supports, contradicts, or lacks evidence.");
+  bullet("Transparent Failures & Dates", "Blocked (401/403/429, CAPTCHA, paywall) or robots-disallowed checks stay visible instead of showing old data as fresh. Unknown dates are labeled Unknown.");
+  bullet("Prompt-Injection & SSRF Defense", "Retrieved text is sanitized of control characters and kept strictly as untrusted DATA; private/localhost URLs are blocked and model outputs are Zod-validated.");
 
-  doc.moveDown(1.2);
+  doc.moveDown(0.8);
 
-  // SECTION 3: HOW IT WORKS (THE MULTI-AGENT PIPELINE)
-  doc.fontSize(15).font("Helvetica-Bold").fillColor(PERI).text("3. How It Works (Step-by-Step Multi-Agent Workflow)");
-  doc.moveDown(0.4);
-  doc.fontSize(10).font("Helvetica").text(
-    "Evidence Desk is powered by LangGraph.js, which orchestrates multiple autonomous agents acting like a team of human researchers:",
-    { lineGap: 3 }
-  );
-  doc.moveDown(0.6);
+  // SECTION 3: HOW IT WORKS
+  doc.fontSize(14).font("Helvetica-Bold").fillColor(PERI).text("3. Step-by-Step Multi-Agent Workflow (LangGraph.js)");
+  doc.moveDown(0.35);
 
   const steps = [
-    { num: "Step 1: Planner Agent (Gemini)", txt: "Analyzes the question and breaks it down into 3 to 6 targeted search vectors." },
-    { num: "Step 2: Searcher Tool (Tavily + arXiv)", txt: "Crawls both the live internet and scientific arXiv repositories for real-time sources." },
-    { num: "Step 3: Normalizer", txt: "Cleans tracking parameters, deduplicates URLs, and saves text excerpts into MongoDB Atlas." },
-    { num: "Step 4: Analyst Agent (Gemini)", txt: "Extracts 10-20 atomic, testable factual statements (claims) from the saved text." },
-    { num: "Step 5: Verifier Agent (Gemini + Code Guardrails)", txt: "Labels each claim as Supported, Contradicted, or Mixed. Discards any non-verbatim excerpts." },
-    { num: "Step 6: Report Writer Agent (Gemini)", txt: "Drafts a cited research report where every statement links strictly to verified evidence IDs." },
+    { num: "Step 1: Planner Agent (Gemini)", txt: "Turns the user's question and workspace watchlist into 3–6 focused search targets." },
+    { num: "Step 2: Controlled Collector (Approved URLs / RSS / Uploads + Tavily)", txt: "Checks SSRF rules & robots.txt (RFC 9309), fetches approved sources, or runs domain-scoped/open search + arXiv." },
+    { num: "Step 3: Normalizer & Change Checker", txt: "Deduplicates canonical URLs, saves SourceSnapshots, computes SHA-256 diffs, and logs failed/stale sources clearly." },
+    { num: "Step 4: Analyst Agent (Gemini)", txt: "Extracts short testable claims tied strictly to saved source IDs, themes, and source disagreements." },
+    { num: "Step 5: Dual Verifier (Code Quote Check + AI Meaning Check)", txt: "Confirms verbatim substring matches in code and classifies claims as Supported, Contradicted, or Not enough evidence." },
+    { num: "Step 6: Report Writer & Save (Gemini + Metrics)", txt: "Produces a concise briefing with citations, change summaries, dates, disagreements, and run metrics." },
   ];
 
-  steps.forEach(s => {
-    doc.fontSize(10).font("Helvetica-Bold").fillColor("#222244").text(s.num);
-    doc.font("Helvetica").fillColor(MUTED).text(s.txt, { indent: 14, lineGap: 2 });
-    doc.moveDown(0.3);
+  steps.forEach((s) => {
+    doc.fontSize(9.5).font("Helvetica-Bold").fillColor("#222244").text(s.num);
+    doc.font("Helvetica").fillColor(MUTED).text(s.txt, { indent: 12, lineGap: 1.8 });
+    doc.moveDown(0.22);
   });
 
   // PAGE 2
   doc.addPage();
 
-  doc.fontSize(15).font("Helvetica-Bold").fillColor(PERI).text("4. Built-In Features");
+  doc.fontSize(14).font("Helvetica-Bold").fillColor(PERI).text("4. Built-In Product & Workspace Features");
   doc.moveDown(0.4);
 
   const features = [
-    { title: "Interactive Knowledge Graph", desc: "A 2D interactive node visualizer powered by React Flow showing how research questions link to claims and evidence." },
-    { title: "Contradiction Radar", desc: "A dedicated matrix isolating contested claims and comparing competing perspectives from different sources." },
-    { title: "Grounded Cross-Examine Chat", desc: "An audit chat mode where you can ask follow-ups. The AI is strictly bounded to the stored MongoDB sources." },
-    { title: "Scholarly Citation Exporter", desc: "1-click generation of academic citations in BibTeX (.bib for LaTeX/Overleaf), APA 7th Edition, and IEEE formats." },
-    { title: "Downloadable PDF Reports", desc: "Exports professional research summaries with an attached verified bibliography and limitations section." },
-    { title: "Responsive Glassmorphic UI", desc: "Custom theme with high-legibility Inter typography, mobile hamburger drawer, and fluid viewport adaptation." },
+    { title: "Competitor & Market Workspaces", desc: "Track companies, approved URLs, release notes, RSS feeds, and uploaded text/markdown documents with optional daily/weekly checks." },
+    { title: "What Changed Timeline", desc: "Inspect exact added and removed lines between snapshots plus explicit failure/blocked warnings." },
+    { title: "Human Review & Finding Corrections", desc: "Approve, flag, or edit any extracted claim directly in the report; corrections carry through to exported Markdown reports." },
+    { title: "Interactive Knowledge Graph & Contradiction Radar", desc: "Visualizes topic-to-claim topology (@xyflow/react) and isolates conflicting claims side-by-side." },
+    { title: "Grounded Cross-Examine Chat", desc: "Ask follow-up questions strictly restricted to saved source excerpts for that run." },
+    { title: "Multi-Format Exports & Citations", desc: "Export PDF, Markdown (.md), Share Summary, and BibTeX / APA 7th / IEEE citations." },
+    { title: "Responsive UI + Firebase Google Sign-In", desc: "3D hero scene (/landing.html), mobile-responsive login/dashboard views, Email/Password + Continue with Google (Firebase), and Demo Mode." },
   ];
 
-  features.forEach(f => {
-    doc.fontSize(10).font("Helvetica-Bold").fillColor(ACCENT).text("✓ " + f.title);
-    doc.font("Helvetica").fillColor(TEXT).text(f.desc, { indent: 14, lineGap: 3 });
-    doc.moveDown(0.4);
+  features.forEach((f) => {
+    doc.fontSize(9.5).font("Helvetica-Bold").fillColor(ACCENT).text("• " + f.title);
+    doc.font("Helvetica").fillColor(TEXT).text(f.desc, { indent: 12, lineGap: 2 });
+    doc.moveDown(0.32);
+  });
+
+  doc.moveDown(0.5);
+
+  // SECTION 5: TECH STACK & DEPLOYMENT
+  doc.fontSize(14).font("Helvetica-Bold").fillColor(PERI).text("5. Technology Stack & Cloud Architecture");
+  doc.moveDown(0.35);
+
+  const stack = [
+    ["Frontend (Vercel)", "React 18, TypeScript, Vite, @xyflow/react, Three.js 3D hero scene, Custom Responsive CSS"],
+    ["Backend (Render)", "Node.js 22+, Express 5, TypeScript, Helmet, strict CORS, Rate Limiting, In-Process Scheduler"],
+    ["Multi-Agent Engine", "@langchain/langgraph & @langchain/core (7-node workflow + controlled collector & diffing)"],
+    ["AI & Search APIs", "Google Gemini Developer API (Flash-class), Tavily Search API, arXiv Open API"],
+    ["Database", "MongoDB Atlas + Mongoose (users, workspaces, sourcesnapshots, researchruns, sources, claims, reports, agentevents)"],
+    ["Authentication", "Email/Password (bcryptjs + JWT cookie/Bearer token) & Firebase Google Sign-In (RS256 certificate verification)"],
+    ["Exports & Testing", "PDFKit, Markdown Report Builder, Citation Formatter; Vitest + Supertest (21 automated unit/eval/isolation tests)"],
+  ];
+
+  stack.forEach(([layer, tech]) => {
+    doc.fontSize(9).font("Helvetica-Bold").fillColor("#222244").text(layer + ": ", { continued: true });
+    doc.font("Helvetica").fillColor(MUTED).text(tech, { lineGap: 2 });
+    doc.moveDown(0.15);
   });
 
   doc.moveDown(0.8);
 
-  // SECTION 5: TECH STACK
-  doc.fontSize(15).font("Helvetica-Bold").fillColor(PERI).text("5. Technology Stack (100% Free-Tier Architecture)");
-  doc.moveDown(0.4);
-
-  const stack = [
-    ["Frontend Layer", "React 18, Vite, TypeScript, Custom Responsive Glassmorphic CSS"],
-    ["Knowledge Graph", "@xyflow/react (React Flow) — Interactive browser-based node visualization"],
-    ["Backend API", "Node.js 22+, Express 5, TypeScript, Cookie-Parser, Helmet, CORS"],
-    ["Multi-Agent Engine", "@langchain/langgraph & @langchain/core — Stateful graph pipeline with conditional routing"],
-    ["Primary AI Model", "Google Gemini Developer API (Eligible free-tier model)"],
-    ["Live Web Search", "Tavily Search API — Researcher plan (1,000 free searches/month)"],
-    ["Academic Search", "arXiv Open API — Public access to preprints and peer-reviewed papers"],
-    ["Database", "MongoDB Atlas Free Cluster (512 MB storage) + Mongoose ODM"],
-    ["Authentication", "JWT (JSON Web Tokens) in httpOnly cookies + bcryptjs password hashing"],
-    ["Export Tools", "PDFKit (Backend PDF report generation) + Citation Formatter"],
-  ];
-
-  stack.forEach(([layer, tech]) => {
-    doc.fontSize(9.5).font("Helvetica-Bold").fillColor("#222244").text(layer + ": ", { continued: true });
-    doc.font("Helvetica").fillColor(MUTED).text(tech, { lineGap: 2 });
-  });
-
-  doc.moveDown(1.2);
-
-  // SECTION 6: RESUME / PORTFOLIO HIGHLIGHT
-  doc.rect(50, doc.y, 495, 68).fillAndStroke("#f5f4fd", "#d6d0f5");
+  // SECTION 6: HONEST LIMITATIONS & SUMMARY
+  doc.rect(50, doc.y, 495, 86).fillAndStroke("#f5f4fd", "#d6d0f5");
   const boxTop = doc.y + 10;
-  doc.fillColor(PERI).fontSize(10.5).font("Helvetica-Bold").text("Resume Summary (For Students & Developers)", 65, boxTop);
-  doc.fillColor(TEXT).fontSize(9).font("Helvetica").text(
-    "Built a full-stack, stateful multi-agent research platform using React, Node.js, LangGraph.js, Gemini API, and MongoDB. " +
-    "The system autonomously plans multi-vector search queries, crawls live web and arXiv academic sources, atomizes factual claims, " +
-    "performs programmatic verbatim evidence checks to eliminate hallucinations, and produces cited, verifiable intelligence reports.",
-    65, boxTop + 18, { width: 465, lineGap: 2 }
+  doc.fillColor(PERI).fontSize(10).font("Helvetica-Bold").text("Scope, Honest Limitations & Project Summary", 65, boxTop);
+  doc.fillColor(TEXT).fontSize(8.8).font("Helvetica").text(
+    "Built a full-stack multi-agent research and competitor-tracking platform using React, TypeScript, Node.js, Express, LangGraph.js, Gemini, Tavily, Firebase Auth, and MongoDB Atlas. The system collects approved public sources, compares versioned snapshots, performs deterministic quote verification separately from AI reasoning, enforces workspace/user isolation, and keeps human review in control.\n" +
+    "Limitations: Does not bypass logins/CAPTCHAs/paywalls or render heavy JS-only SPAs; AI reasoning cannot guarantee ground truth; recurring schedules require a persistent server host.",
+    65, boxTop + 16, { width: 465, lineGap: 2 }
   );
 
   doc.end();
